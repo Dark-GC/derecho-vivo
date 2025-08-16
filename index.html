@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Derecho Vivo - Conociendo la Ley Paso a Paso</title>
+
+  <!-- Bootstrap y FontAwesome -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+  <link rel="icon" href="img/logo.png" type="image/x-icon" />
+
+
+  <!-- Estilos personalizados -->
+  <style>
+    :root {
+      --scrollbarBG: #f1f1f1;
+      --thumbBG: #8e44ad;
+      --light-bg: #f8f9fa;
+      --dark-bg: #121212;
+      --dark-card: #1e1e1e;
+      --text-dark: #f5f5f5;
+      --primary: #8e44ad;
+    }
+
+    /* Scroll personalizado */
+    body::-webkit-scrollbar { width: 10px; }
+    body::-webkit-scrollbar-track { background: var(--scrollbarBG); }
+    body::-webkit-scrollbar-thumb {
+      background-color: var(--thumbBG);
+      border-radius: 6px;
+      border: 2px solid var(--scrollbarBG);
+    }
+
+    body {
+      background-color: var(--light-bg);
+      color: #212529;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .card, .navbar, footer {
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    body.dark-mode {
+      background-color: var(--dark-bg);
+      color: var(--text-dark);
+    }
+
+    body.dark-mode .card {
+      background-color: var(--dark-card);
+      color: var(--text-dark);
+    }
+
+    body.dark-mode .navbar, 
+    body.dark-mode footer {
+      background-color: #222;
+      color: var(--text-dark);
+    }
+
+    .toggle-btn {
+      cursor: pointer;
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .toggle-btn:hover {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .logo i {
+      font-size: 2rem;
+      margin-right: 10px;
+      color: var(--primary);
+    }
+
+    header h1 { font-weight: bold; }
+
+    #welcome-screen {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(to right, #8e44ad, #5e3370);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 1s ease;
+    }
+
+    #welcome-screen img {
+      width: 100px;
+      animation: pulse 2s infinite;
+      margin-bottom: 1rem;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    #enter-btn {
+      margin-top: 1rem;
+      padding: 10px 20px;
+      background: white;
+      color: #8e44ad;
+      border: none;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      transition: background 0.3s;
+    }
+
+    #enter-btn:hover {
+      background: #f1f1f1;
+    }
+
+    /* Carrusel adaptado */
+    .carousel-item img {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+    }
+
+    /* Imágenes de los artículos */
+    .card-body img {
+      display: block;
+      margin: 0 auto;
+      max-width: 100%;
+      height: auto;
+      max-height: 300px;
+      object-fit: cover;
+    }
+
+    /* Contenedor para videos */
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 */
+      padding-top: 25px;
+      height: 0;
+      margin-bottom: 1rem;
+    }
+
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Botones del slider en morado */
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+      background-color: var(--primary);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      background-size: 60% 60%;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0.85;
+      transition: opacity 0.3s ease;
+    }
+    .carousel-control-prev-icon:hover,
+    .carousel-control-next-icon:hover {
+      opacity: 1;
+    }
+
+    .carousel-control-prev-icon {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 8 8'%3e%3cpath d='M5.5 0L4.08 1.41 6.67 4 4.08 6.59 5.5 8l4-4-4-4z'/%3e%3c/svg%3e");
+      transform: rotate(180deg);
+    }
+
+    .carousel-control-next-icon {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 8 8'%3e%3cpath d='M0 0l1.41 1.41L3.83 4 1.41 6.59 0 8l4-4-4-4z'/%3e%3c/svg%3e");
+    }
+
+    /* Indicadores (puntitos) en morado */
+    .carousel-indicators [data-bs-target] {
+      background-color: var(--primary);
+      opacity: 0.7;
+    }
+    .carousel-indicators .active {
+      opacity: 1;
+    }
+
+    /* Comentarios */
+    .comments-section {
+      margin-top: 2rem;
+      border-top: 1px solid #ccc;
+      padding-top: 1rem;
+    }
+
+    .comments-section h3 {
+      margin-bottom: 1rem;
+      color: var(--primary);
+    }
+
+    .comment {
+      border-bottom: 1px solid #ddd;
+      padding: 0.5rem 0;
+      position: relative;
+    }
+
+    .comment strong {
+      color: var(--primary);
+    }
+
+    .comment-text {
+      margin: 0.3rem 0 0 0;
+    }
+
+    .comment-actions {
+      position: absolute;
+      top: 5px;
+      right: 0;
+    }
+
+    .comment-actions button {
+      background: none;
+      border: none;
+      color: var(--primary);
+      cursor: pointer;
+      margin-left: 0.5rem;
+    }
+
+    .comment-actions button:hover {
+      color: #4b2a7e;
+    }
+
+    .comment-form {
+      margin-top: 1rem;
+    }
+
+    .comment-form input[type="text"],
+    .comment-form textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      resize: vertical;
+    }
+
+    .comment-form button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .comment-form button:hover {
+      background-color: #6a2d91;
+    }
+
+    /* Ajuste para dark mode comentarios */
+    body.dark-mode .comments-section {
+      border-color: #444;
+    }
+
+    body.dark-mode .comment {
+      border-color: #555;
+    }
+
+    body.dark-mode .comment-form input[type="text"],
+    body.dark-mode .comment-form textarea {
+      background-color: #333;
+      border-color: #555;
+      color: var(--text-dark);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Pantalla de Bienvenida -->
+  <div id="welcome-screen">
+    <img src="img/logo.png" alt="Logo Derecho Vivo" />
+    <h1>Bienvenido a Derecho Vivo</h1>
+    <p>Conociendo la ley paso a paso 🦉</p>
+    <button id="enter-btn">Entrar al Blog</button>
+    <audio id="click-sound" src="sounds/click.mp3" preload="auto"></audio>
+  </div>
+
+  <!-- NAV -->
+  <nav class="navbar navbar-expand-lg sticky-top shadow-sm px-4 bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand logo" href="#">
+        <i class="fas fa-scale-balanced"></i> Derecho Vivo
+      </a>
+      <button class="btn btn-outline-primary toggle-btn" onclick="toggleMode()">🌞 / 🌙</button>
+    </div>
+  </nav>
+
+  <!-- SLIDER -->
+  <div id="carouselExampleIndicators" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-interval="5000">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="img/slider1.png" class="d-block w-100" alt="Constitución" />
+      </div>
+      <div class="carousel-item">
+        <img src="img/slider2.png" class="d-block w-100" alt="Consumidor" />
+      </div>
+      <div class="carousel-item">
+        <img src="img/slider3.png" class="d-block w-100" alt="Fraude Digital" />
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Anterior</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Siguiente</span>
+    </button>
+  </div>
+
+  <!-- HEADER -->
+  <header class="text-center mb-4">
+    <h1>Conociendo la Ley Paso a Paso</h1>
+    <p>🦉 Publicación semanal — Todos los lunes a las 7:00 p.m.</p>
+    <p><em>Autora: <strong>Arianny M. Ramos Morel</strong></em></p>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="container">
+    <!-- ARTÍCULO 1 -->
+    <section class="card mb-5 shadow">
+      <div class="card-body">
+        <h2>🦁 ¿Qué es la Constitución y por qué es tan importante?</h2>
+        <img src="img/constitucion.jpg" class="img-fluid my-3 rounded" alt="Constitución Dominicana" />
+        <p>La Constitución es la ley suprema. Organiza el Estado y reconoce derechos y deberes.</p>
+        <p>Pensemos en ella como el “manual de la casa común”.</p>
+        <ul>
+          <li>Limita el poder del Estado.</li>
+          <li>Protege libertades (expresión, tránsito, debido proceso).</li>
+          <li>Define instituciones (Congreso, Poder Judicial, órganos de control).</li>
+        </ul>
+        <p><strong>Ejemplo:</strong> Así como en una familia acordamos horarios y responsabilidades, la Constitución fija las “reglas del juego” para todo el país.</p>
+
+        <!-- Video -->
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/tvlR9xp8rJM" frameborder="0" allowfullscreen></iframe>
+        </div>
+
+        <p><strong>Conclusión:</strong> Comprender la Constitución nos da lenguaje para exigir y cumplir. Empezar por lo básico sí acelera el entendimiento de materias complejas.</p>
+
+        <!-- Comentarios para artículo 1 -->
+        <div class="comments-section" data-article-index="0">
+          <h3>Comentarios</h3>
+          <div class="comments-list"></div>
+
+          <form class="comment-form">
+            <input type="text" name="name" placeholder="Tu nombre" required />
+            <textarea name="comment" rows="3" placeholder="Tu comentario" required></textarea>
+            <button type="submit">Agregar Comentario</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ARTÍCULO 2 -->
+    <section class="card mb-5 shadow">
+      <div class="card-body">
+        <h2>🐿️ Tus derechos como consumidor</h2>
+        <img src="img/consumidor.jpg" class="img-fluid my-3 rounded" alt="Derechos del consumidor" />
+        <p>Cuando compramos, la ley protege frente a estafas, mala calidad o incumplimientos.</p>
+        <ul>
+          <li>A información veraz sobre precio, garantía y condiciones.</li>
+          <li>A calidad acorde con lo prometido.</li>
+          <li>A reparación, cambio o reembolso si el producto falla en un lapso razonable.</li>
+        </ul>
+        <p><strong>Ejemplo:</strong> Compramos un teléfono y se daña a los dos días. Podemos reclamar al proveedor o escalar a la autoridad de consumo.</p>
+
+        <!-- Video -->
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/Q70_swQo6QA" frameborder="0" allowfullscreen></iframe>
+        </div>
+
+        <p><strong>Conclusión:</strong> Reclamar con respeto y orden aumenta la probabilidad de solución.</p>
+
+        <!-- Comentarios para artículo 2 -->
+        <div class="comments-section" data-article-index="1">
+          <h3>Comentarios</h3>
+          <div class="comments-list"></div>
+
+          <form class="comment-form">
+            <input type="text" name="name" placeholder="Tu nombre" required />
+            <textarea name="comment" rows="3" placeholder="Tu comentario" required></textarea>
+            <button type="submit">Agregar Comentario</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ARTÍCULO 3 -->
+    <section class="card mb-5 shadow">
+      <div class="card-body">
+        <h2>🦊 ¿Qué hacer si eres víctima de un fraude digital?</h2>
+        <img src="img/fraude.jpg" class="img-fluid my-3 rounded" alt="Fraude digital" />
+        <p>Los fraudes digitales aumentan. La buena noticia: hay pasos simples que protegen y ayudan a investigar.</p>
+        <ul>
+          <li>No respondas ni hagas clic.</li>
+          <li>Guarda pruebas: capturas, correos, números, hora y fecha.</li>
+          <li>Cambia contraseñas y activa doble factor.</li>
+          <li>Contacta a tu banco y registra el incidente.</li>
+          <li>Denuncia ante autoridades competentes.</li>
+        </ul>
+        <p><strong>Ejemplo:</strong> Te llega un mensaje que tu banco solicita tu token. No respondemos. Capturamos pantalla, anotamos número y hora, llamamos al banco al teléfono oficial y luego completamos la denuncia.</p>
+
+        <!-- Video -->
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/-K01PCzDInw" frameborder="0" allowfullscreen></iframe>
+        </div>
+
+        <p><strong>Conclusión:</strong> La rapidez y la prueba marcan la diferencia. La alfabetización digital debe enseñarse desde el primer semestre universitario.</p>
+
+        <!-- Comentarios para artículo 3 -->
+        <div class="comments-section" data-article-index="2">
+          <h3>Comentarios</h3>
+          <div class="comments-list"></div>
+
+          <form class="comment-form">
+            <input type="text" name="name" placeholder="Tu nombre" required />
+            <textarea name="comment" rows="3" placeholder="Tu comentario" required></textarea>
+            <button type="submit">Agregar Comentario</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="text-center p-4 shadow-sm">
+    <p>© 2025 Derecho Vivo. Todos los derechos reservados. | 🦉 Educando con claridad y pasión.</p>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    function toggleMode() {
+      document.body.classList.toggle('dark-mode');
+    }
+
+    document.getElementById("enter-btn").addEventListener("click", function () {
+      const audio = document.getElementById("click-sound");
+      audio.play();
+      document.getElementById("welcome-screen").style.opacity = "0";
+      setTimeout(() => {
+        document.getElementById("welcome-screen").style.display = "none";
+      }, 1000);
+    });
+
+    // Funciones de comentarios
+    document.querySelectorAll('.comments-section').forEach(section => {
+      const articleIndex = section.dataset.articleIndex;
+      const commentsList = section.querySelector('.comments-list');
+      const form = section.querySelector('.comment-form');
+
+      // Cargar comentarios desde localStorage
+      function loadComments() {
+        const saved = localStorage.getItem('comments_article_' + articleIndex);
+        const comments = saved ? JSON.parse(saved) : [];
+        commentsList.innerHTML = '';
+
+        comments.forEach((c, i) => {
+          const commentDiv = document.createElement('div');
+          commentDiv.classList.add('comment');
+
+          // Mostrar comentario o formulario de edición
+          commentDiv.innerHTML = `
+            <strong>${escapeHtml(c.name)}</strong>
+            <p class="comment-text">${escapeHtml(c.comment)}</p>
+            <div class="comment-actions">
+              <button class="edit-btn" data-index="${i}" title="Editar"><i class="fas fa-edit"></i></button>
+              <button class="delete-btn" data-index="${i}" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+            </div>
+          `;
+
+          commentsList.appendChild(commentDiv);
+        });
+
+        // Agregar eventos a botones
+        commentsList.querySelectorAll('.edit-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const idx = btn.dataset.index;
+            startEditComment(idx);
+          });
+        });
+        commentsList.querySelectorAll('.delete-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const idx = btn.dataset.index;
+            deleteComment(idx);
+          });
+        });
+      }
+
+      // Agregar comentario nuevo
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        const nameInput = form.elements['name'];
+        const commentInput = form.elements['comment'];
+        const name = nameInput.value.trim();
+        const comment = commentInput.value.trim();
+        if (!name || !comment) {
+          alert('Por favor, completa ambos campos.');
+          return;
+        }
+
+        const saved = localStorage.getItem('comments_article_' + articleIndex);
+        const comments = saved ? JSON.parse(saved) : [];
+        comments.push({ name, comment });
+        localStorage.setItem('comments_article_' + articleIndex, JSON.stringify(comments));
+
+        nameInput.value = '';
+        commentInput.value = '';
+        loadComments();
+      });
+
+      // Función para iniciar edición de comentario
+      function startEditComment(idx) {
+        const saved = localStorage.getItem('comments_article_' + articleIndex);
+        const comments = saved ? JSON.parse(saved) : [];
+        const comment = comments[idx];
+
+        if (!comment) return;
+
+        // Reemplazar comentario por formulario de edición
+        const commentDivs = commentsList.querySelectorAll('.comment');
+        const targetDiv = commentDivs[idx];
+
+        targetDiv.innerHTML = `
+          <input type="text" class="edit-name form-control mb-1" value="${escapeHtml(comment.name)}" />
+          <textarea class="edit-comment form-control mb-1" rows="3">${escapeHtml(comment.comment)}</textarea>
+          <button class="save-edit btn btn-sm btn-primary me-1">Guardar</button>
+          <button class="cancel-edit btn btn-sm btn-secondary">Cancelar</button>
+        `;
+
+        const inputName = targetDiv.querySelector('.edit-name');
+        const textareaComment = targetDiv.querySelector('.edit-comment');
+        const btnSave = targetDiv.querySelector('.save-edit');
+        const btnCancel = targetDiv.querySelector('.cancel-edit');
+
+        btnSave.addEventListener('click', () => {
+          const newName = inputName.value.trim();
+          const newComment = textareaComment.value.trim();
+          if (!newName || !newComment) {
+            alert('Por favor, completa ambos campos.');
+            return;
+          }
+          comments[idx] = { name: newName, comment: newComment };
+          localStorage.setItem('comments_article_' + articleIndex, JSON.stringify(comments));
+          loadComments();
+        });
+
+        btnCancel.addEventListener('click', () => {
+          loadComments();
+        });
+      }
+
+      // Eliminar comentario
+      function deleteComment(idx) {
+        if (!confirm('¿Seguro que quieres eliminar este comentario?')) return;
+        const saved = localStorage.getItem('comments_article_' + articleIndex);
+        const comments = saved ? JSON.parse(saved) : [];
+        comments.splice(idx, 1);
+        localStorage.setItem('comments_article_' + articleIndex, JSON.stringify(comments));
+        loadComments();
+      }
+
+      // Función para escapar HTML y evitar inyección
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      loadComments();
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
